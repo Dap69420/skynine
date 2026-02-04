@@ -1,4 +1,9 @@
 {
   "buildCommand": "npm install",
-  "outputDirectory": "public"
+  "outputDirectory": ".",
+  "functions": {
+    "server.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
