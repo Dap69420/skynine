@@ -863,7 +863,6 @@
     // Multi-step form data
     const formData = {
       releaseTitle: '',
-      releaseVersion: '',
       artists: [],
       demoLink: '',
       message: '',
@@ -944,7 +943,6 @@
     function saveCurrentStepData() {
       if (currentStep === 1) {
         formData.releaseTitle = document.getElementById('releaseTitle').value;
-        formData.releaseVersion = document.getElementById('releaseVersion').value;
       } else if (currentStep === 2) {
         // Artists, producers, composers are saved dynamically
       } else if (currentStep === 3) {
@@ -1015,7 +1013,6 @@
         <div class="review-section">
           <h4>Release Information</h4>
           <div class="review-item"><span class="review-label">Release Title:</span> <span class="review-value">${formData.releaseTitle}</span></div>
-          <div class="review-item"><span class="review-label">Release Version:</span> <span class="review-value">${formData.releaseVersion}</span></div>
         </div>
       `;
       
@@ -1072,7 +1069,6 @@
         },
         body: JSON.stringify({
           releaseTitle: formData.releaseTitle,
-          releaseVersion: formData.releaseVersion,
           artists: formData.artists,
           demoLink: formData.demoLink,
           message: formData.message,

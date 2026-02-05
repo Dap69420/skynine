@@ -5,6 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Submit your music to Sky9 - A premier music label for emerging artists" />
+  <meta property="og:title" content="Sky9 - Music Label Submission" />
+  <meta property="og:description" content="Submit your music to Sky9 - A premier music label for emerging artists" />
+  <meta property="og:image" content="https://sky9.fr/embed.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://sky9.fr/embed.jpg" />
   <title>Sky9 - Music Label Submission</title>
   <link rel="icon" href="/favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -944,7 +950,6 @@
     function saveCurrentStepData() {
       if (currentStep === 1) {
         formData.releaseTitle = document.getElementById('releaseTitle').value;
-        formData.releaseVersion = document.getElementById('releaseVersion').value;
       } else if (currentStep === 2) {
         // Artists, producers, composers are saved dynamically
       } else if (currentStep === 3) {
@@ -1015,7 +1020,6 @@
         <div class="review-section">
           <h4>Release Information</h4>
           <div class="review-item"><span class="review-label">Release Title:</span> <span class="review-value">${formData.releaseTitle}</span></div>
-          <div class="review-item"><span class="review-label">Release Version:</span> <span class="review-value">${formData.releaseVersion}</span></div>
         </div>
       `;
       
@@ -1072,7 +1076,6 @@
         },
         body: JSON.stringify({
           releaseTitle: formData.releaseTitle,
-          releaseVersion: formData.releaseVersion,
           artists: formData.artists,
           demoLink: formData.demoLink,
           message: formData.message,

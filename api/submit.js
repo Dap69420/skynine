@@ -52,14 +52,17 @@ module.exports = async (req, res) => {
 
     const embed = {
       title: '🎵 New Demo Submission',
+      description: `New demo submission received for review`,
       color: 0x4db8ff,
-      thumbnail: {
-        url: 'https://sky9.fr/embed.webp'
-      },
       fields: [
         {
           name: '🎫 Submission Code',
           value: `\`${demoCode}\``,
+          inline: false
+        },
+        {
+          name: '━━━━━━━━━━━━━━━━━',
+          value: '\u200b',
           inline: false
         },
         {
@@ -70,6 +73,11 @@ module.exports = async (req, res) => {
         {
           name: '👨‍🎤 Artists',
           value: artistsText || 'None',
+          inline: false
+        },
+        {
+          name: '━━━━━━━━━━━━━━━━━',
+          value: '\u200b',
           inline: false
         },
         {
