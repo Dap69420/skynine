@@ -31,10 +31,10 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { releaseTitle, artists, demoLink, message, email } = req.body;
+    const { releaseTitle, releaseVersion, artists, demoLink, message, email } = req.body;
 
     // Validate required fields
-    if (!releaseTitle || !artists || artists.length === 0 || !demoLink || !email) {
+    if (!releaseTitle || !releaseVersion || !artists || artists.length === 0 || !demoLink || !email) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -52,7 +52,6 @@ module.exports = async (req, res) => {
 
     const embed = {
       title: '🎵 New Demo Submission',
-      description: `New demo submission received for review`,
       color: 0x4db8ff,
       fields: [
         {
@@ -61,23 +60,18 @@ module.exports = async (req, res) => {
           inline: false
         },
         {
-          name: '━━━━━━━━━━━━━━━━━',
-          value: '\u200b',
-          inline: false
-        },
-        {
           name: '💿 Release Title',
           value: releaseTitle,
-          inline: false
+          inline: true
+        },
+        {
+          name: '🎼 Release Version',
+          value: releaseVersion,
+          inline: true
         },
         {
           name: '👨‍🎤 Artists',
           value: artistsText || 'None',
-          inline: false
-        },
-        {
-          name: '━━━━━━━━━━━━━━━━━',
-          value: '\u200b',
           inline: false
         },
         {

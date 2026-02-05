@@ -5,6 +5,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Submit your music to Sky9 - A premier music label for emerging artists" />
+  <meta property="og:title" content="Sky9 - Music Label Submission" />
+  <meta property="og:description" content="Submit your music to Sky9 - A premier music label for emerging artists" />
+  <meta property="og:image" content="/embed.jpg" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="/embed.jpg" />
   <title>Sky9 - Music Label Submission</title>
   <link rel="icon" href="/favicon.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
@@ -14,7 +20,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: rgba(77, 184, 255, 0.2); /* Better tap feedback */
+      -webkit-tap-highlight-color: rgba(77, 184, 255, 0.2);
     }
 
     body {
@@ -157,7 +163,7 @@
       position: relative;
       z-index: 2;
       animation: fadeIn 0.8s ease-out 0.3s both;
-      padding-top: 120px; /* Space for fixed header */
+      padding-top: 120px;
       width: 100%;
     }
 
@@ -173,7 +179,7 @@
     }
 
     h1 {
-      display: none; /* Hidden - using header title instead */
+      display: none;
     }
 
     h1 span {
@@ -220,7 +226,7 @@
       outline: none;
       transition: all 0.3s ease;
       font-family: 'Poppins', sans-serif;
-      -webkit-appearance: none; /* Remove iOS styling */
+      -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
     }
@@ -262,7 +268,7 @@
       box-shadow: 0 4px 15px rgba(77, 184, 255, 0.3);
       font-family: 'Poppins', sans-serif;
       -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation; /* Better touch handling */
+      touch-action: manipulation;
       user-select: none;
     }
 
@@ -429,7 +435,7 @@
     textarea {
       min-height: 100px;
       resize: vertical;
-      max-height: 300px; /* Limit height on mobile */
+      max-height: 300px;
     }
 
     input[type="email"]:focus,
@@ -573,10 +579,25 @@
       text-shadow: 0 0 20px rgba(77, 184, 255, 0.5);
     }
 
-    /* Mobile Optimization - Enhanced for better UX */
+    /* Desktop Optimization - Larger inputs for PC */
+    @media (min-width: 769px) {
+      input[type="text"],
+      input[type="url"],
+      input[type="email"],
+      textarea {
+        padding: 18px 22px;
+        font-size: 1.05rem;
+      }
+
+      textarea {
+        min-height: 140px;
+      }
+    }
+
+    /* Mobile Optimization */
     @media (max-width: 768px) {
       body {
-        padding-top: 0; /* Remove since main has padding */
+        padding-top: 0;
       }
 
       header {
@@ -641,7 +662,7 @@
       input[type="email"],
       textarea {
         padding: 16px 14px;
-        font-size: 16px; /* Prevents zoom on iOS */
+        font-size: 16px;
         border-radius: 8px;
       }
 
@@ -653,7 +674,7 @@
         padding: 16px 20px;
         font-size: 1rem;
         border-radius: 8px;
-        min-height: 50px; /* Better touch target */
+        min-height: 50px;
       }
 
       .progress-container {
@@ -863,6 +884,7 @@
     // Multi-step form data
     const formData = {
       releaseTitle: '',
+      releaseVersion: '',
       artists: [],
       demoLink: '',
       message: '',
@@ -943,6 +965,7 @@
     function saveCurrentStepData() {
       if (currentStep === 1) {
         formData.releaseTitle = document.getElementById('releaseTitle').value;
+        formData.releaseVersion = document.getElementById('releaseVersion').value;
       } else if (currentStep === 2) {
         // Artists, producers, composers are saved dynamically
       } else if (currentStep === 3) {
@@ -1013,6 +1036,7 @@
         <div class="review-section">
           <h4>Release Information</h4>
           <div class="review-item"><span class="review-label">Release Title:</span> <span class="review-value">${formData.releaseTitle}</span></div>
+          <div class="review-item"><span class="review-label">Release Version:</span> <span class="review-value">${formData.releaseVersion}</span></div>
         </div>
       `;
       
@@ -1069,6 +1093,7 @@
         },
         body: JSON.stringify({
           releaseTitle: formData.releaseTitle,
+          releaseVersion: formData.releaseVersion,
           artists: formData.artists,
           demoLink: formData.demoLink,
           message: formData.message,
@@ -1146,6 +1171,9 @@
           <h3>Release Information</h3>
           <label>Release Title *</label>
           <input type="text" id="releaseTitle" placeholder="Enter release title" required>
+          
+          <label>Release Version</label>
+          <input type="text" id="releaseVersion" placeholder="e.g., Original Mix, Radio Edit">
         </div>
         
         <div class="form-navigation">

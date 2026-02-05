@@ -35,7 +35,7 @@ app.post('/api/submit', async (req, res) => {
     const { releaseTitle, releaseVersion, artists, demoLink, message, email } = req.body;
 
     // Validate required fields
-    if (!releaseTitle || !releaseVersion || !artists || artists.length === 0 || !demoLink || !email) {
+    if (!releaseTitle || !artists || artists.length === 0 || !demoLink || !email) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
