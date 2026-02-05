@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
     const { releaseTitle, releaseVersion, artists, demoLink, message, email } = req.body;
 
     // Validate required fields
-    if (!releaseTitle || !releaseVersion || !artists || artists.length === 0 || !demoLink || !email) {
+    if (!releaseTitle || !artists || artists.length === 0 || !demoLink || !email) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -53,6 +53,9 @@ module.exports = async (req, res) => {
     const embed = {
       title: '🎵 New Demo Submission',
       color: 0x4db8ff,
+      thumbnail: {
+        url: 'https://sky9.fr/embed.webp'
+      },
       fields: [
         {
           name: '🎫 Submission Code',
@@ -62,12 +65,7 @@ module.exports = async (req, res) => {
         {
           name: '💿 Release Title',
           value: releaseTitle,
-          inline: true
-        },
-        {
-          name: '🎼 Release Version',
-          value: releaseVersion,
-          inline: true
+          inline: false
         },
         {
           name: '👨‍🎤 Artists',
