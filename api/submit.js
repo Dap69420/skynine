@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { releaseTitle, releaseVersion, artists, demoLink, message, email } = req.body;
+    const { releaseTitle, artists, demoLink, message, email } = req.body;
 
     // Validate required fields
     if (!releaseTitle || !artists || artists.length === 0 || !demoLink || !email) {
