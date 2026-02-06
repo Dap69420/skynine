@@ -31,10 +31,10 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { releaseTitle, releaseVersion, artists, demoLink, message, email } = req.body;
+    const { releaseTitle, artists, demoLink, message, email } = req.body;
 
     // Validate required fields
-    if (!releaseTitle || !releaseVersion || !artists || artists.length === 0 || !demoLink || !email) {
+    if (!releaseTitle || !artists || artists.length === 0 || !demoLink || !email) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -62,11 +62,6 @@ module.exports = async (req, res) => {
         {
           name: '💿 Release Title',
           value: releaseTitle,
-          inline: true
-        },
-        {
-          name: '🎼 Release Version',
-          value: releaseVersion,
           inline: true
         },
         {
