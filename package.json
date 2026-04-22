@@ -1,19 +1,28 @@
 {
-  "name": "sky9-submission-backend",
+  "name": "sky9",
   "version": "1.0.0",
-  "description": "Backend for Sky9 demo submissions via Discord webhook",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "build": "echo 'Build complete'"
+    "test": "echo \"No tests configured\""
   },
-  "keywords": ["discord", "webhook", "submissions"],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dap69420/sky9.git"
+  },
+  "keywords": [],
   "author": "",
-  "license": "MIT",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Dap69420/sky9/issues"
+  },
+  "homepage": "https://github.com/Dap69420/sky9#readme",
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1"
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
   }
 }

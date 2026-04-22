@@ -1,136 +1,131 @@
-require('dotenv').config();
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "https://sky9-rose.vercel.app"
+];
 
-// Generate unique demo code
-function generateDemoCode() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let code = 'DEMO-';
-  for (let i = 0; i < 4; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
+function getCorsOrigin(origin) {
+  if (!origin) {
+    return "*";
   }
-  code += '-';
-  for (let i = 0; i < 4; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return code;
+  return allowedOrigins.includes(origin) ? origin : "";
 }
 
-module.exports = async (req, res) => {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+function setCorsHeaders(req, res) {
+  const origin = getCorsOrigin(req.headers.origin);
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
 
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+function clean(value, maxLength = 500) {
+  if (typeof value !== "string") {
+    return "";
+  }
+  return value.trim().slice(0, maxLength);
+}
+
+function validatePayload(payload) {
+  const artist = clean(payload.artist, 120);
+  const email = clean(payload.email, 160);
+  const genre = clean(payload.genre, 120);
+  const audioLink = clean(payload.audioLink, 400);
+  const notes = clean(payload.notes, 1000);
+
+  if (!artist || !email || !genre || !audioLink || !notes) {
+    return { ok: false, error: "Missing required fields" };
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (!email.includes("@")) {
+    return { ok: false, error: "Invalid email" };
   }
+
+  if (!/^https?:\/\//i.test(audioLink)) {
+    return { ok: false, error: "Audio link must start with http:// or https://" };
+  }
+
+  return {
+    ok: true,
+    data: { artist, email, genre, audioLink, notes }
+  };
+}
+
+function buildDiscordPayload(data) {
+  return {
+    username: "Sky9 Demo",
+    avatar_url: "https://i.imgur.com/5qUK4QB.png",
+    embeds: [
+      {
+        title: "New Demo Submission",
+        color: 0x008cff,
+        fields: [
+          { name: "Artist", value: data.artist, inline: true },
+          { name: "Email", value: data.email, inline: true },
+          { name: "Genre", value: data.genre, inline: true },
+          { name: "Audio Link", value: `[Listen here](${data.audioLink})`, inline: false },
+          { name: "Notes", value: data.notes, inline: false }
+        ],
+        footer: { text: `Sky9 Demo | ${new Date().toISOString()}` }
+      }
+    ]
+  };
+}
+
+async function handler(req, res) {
+  setCorsHeaders(req, res);
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ success: false, error: "Method not allowed" });
+  }
+
+  const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  if (!webhookUrl) {
+    return res.status(500).json({ success: false, error: "Webhook is not configured" });
+  }
+
+  if (webhookUrl.includes("your-webhook-id") || webhookUrl.includes("your-webhook-token")) {
+    return res.status(500).json({ success: false, error: "Webhook placeholder detected. Set DISCORD_WEBHOOK_URL in .env" });
+  }
+
+  const validation = validatePayload(req.body || {});
+  if (!validation.ok) {
+    return res.status(400).json({ success: false, error: validation.error });
+  }
+
+  const discordPayload = buildDiscordPayload(validation.data);
 
   try {
-    const { releaseTitle, artists, demoLink, message, email } = req.body;
-
-    // Validate required fields
-    if (!releaseTitle || !artists || artists.length === 0 || !demoLink || !email) {
-      return res.status(400).json({ error: 'Missing required fields' });
-    }
-
-    // Generate demo code
-    const demoCode = generateDemoCode();
-
-    // Build Discord embed
-    const artistsText = artists.map((artist, i) => {
-      let text = `**${i + 1}. ${artist.name}**`;
-      if (artist.spotify) {
-        text += `\n   🎵 [Spotify Link](${artist.spotify})`;
-      }
-      return text;
-    }).join('\n');
-
-    const embed = {
-      title: '🎵 New Demo Submission',
-      color: 0x4db8ff,
-      fields: [
-        {
-          name: '🎫 Submission Code',
-          value: `\`${demoCode}\``,
-          inline: false
-        },
-        {
-          name: '💿 Release Title',
-          value: releaseTitle,
-          inline: true
-        },
-        {
-          name: '👨‍🎤 Artists',
-          value: artistsText || 'None',
-          inline: false
-        },
-        {
-          name: '🔗 Demo Link',
-          value: `[Listen Here](${demoLink})`,
-          inline: false
-        },
-        {
-          name: '📧 Contact Email',
-          value: email,
-          inline: false
-        }
-      ],
-      timestamp: new Date().toISOString(),
-      footer: {
-        text: 'Sky9 Submission System'
-      }
-    };
-
-    // Add message if provided
-    if (message && message.trim()) {
-      embed.fields.push({
-        name: '💬 Additional Message',
-        value: message,
-        inline: false
-      });
-    }
-
-    // Send to Discord webhook
-    const webhookURL = process.env.DISCORD_WEBHOOK_URL;
-    
-    if (!webhookURL) {
-      console.error('Discord webhook URL not configured');
-      return res.status(500).json({ error: 'Server configuration error' });
-    }
-
-    const discordResponse = await fetch(webhookURL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: 'Sky9 Submissions',
-        avatar_url: 'https://i.imgur.com/GKUBgxB.png',
-        embeds: [embed]
-      })
+    const discordResponse = await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(discordPayload)
     });
 
     if (!discordResponse.ok) {
-      throw new Error(`Discord webhook failed: ${discordResponse.statusText}`);
+      let discordErrorText = "";
+      try {
+        discordErrorText = await discordResponse.text();
+      } catch (e) {
+        discordErrorText = "";
+      }
+      return res.status(502).json({
+        success: false,
+        error: "Webhook delivery failed",
+        discordStatus: discordResponse.status,
+        discordMessage: discordErrorText ? discordErrorText.slice(0, 300) : "No response body"
+      });
     }
 
-    // Return success with demo code
-    return res.status(200).json({
-      success: true,
-      demoCode: demoCode,
-      message: 'Submission received successfully'
-    });
-
+    return res.status(200).json({ success: true });
   } catch (error) {
-    console.error('Error processing submission:', error);
-    return res.status(500).json({ 
-      error: 'Failed to process submission',
-      details: error.message 
-    });
+    return res.status(500).json({ success: false, error: "Internal server error" });
   }
-};
+}
+
+module.exports = handler;
