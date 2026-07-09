@@ -54,7 +54,7 @@ function validatePayload(payload) {
 
 function buildDiscordPayload(data) {
   return {
-    username: "Sky9 Demo",
+    username: "Dap Media Demo",
     avatar_url: "https://i.imgur.com/5qUK4QB.png",
     embeds: [
       {
@@ -67,7 +67,7 @@ function buildDiscordPayload(data) {
           { name: "Audio Link", value: `[Listen here](${data.audioLink})`, inline: false },
           { name: "Notes", value: data.notes, inline: false }
         ],
-        footer: { text: `Sky9 Demo | ${new Date().toISOString()}` }
+        footer: { text: `Dap Media Demo | ${new Date().toISOString()}` }
       }
     ]
   };

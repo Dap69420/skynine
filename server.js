@@ -27,5 +27,5 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Sky9 server running on http://localhost:${PORT}`);
+  console.log(`Dap Media server running on http://localhost:${PORT}`);
 });
